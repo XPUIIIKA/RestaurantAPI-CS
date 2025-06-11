@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Restaurant.Domain.Entities;
 
 namespace Restaurant.Application.DTO.DishDTO;
 
@@ -24,4 +25,13 @@ public record UpdateDishDto
     [Required]
     [Range(10.00, 10000.00, ErrorMessage = "Price must be between 10.00 and 10000.00")]
     public required decimal Price { get; init; }
+
+    public bool IsEquivalentTo(Dish dish)
+    {
+        return dish.Id == Id &&
+               dish.Name == Name &&
+               dish.Description == Description &&
+               dish.ProductionPrice == ProductionPrice &&
+               dish.Price == Price;
+    }
 }

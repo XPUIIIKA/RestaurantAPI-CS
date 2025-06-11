@@ -2,29 +2,18 @@
 using Restaurant.Application.DTO;
 using Restaurant.Application.DTO.DishDTO;
 using Restaurant.Application.Interfaces;
+using Restaurant.Application.Mappers;
 using Restaurant.Application.Repositories;
 
 namespace Restaurant.Application.Services;
 
-public class MenuService : IMenuService
+public class MenuService(IDishRepository dishRepository) : IMenuService
 {
-    private readonly IDishRepository _dishRepository;
-
-    public MenuService(IDishRepository dishRepository)
-    {
-        _dishRepository = dishRepository;
-    }
-    
     public async Task<ErrorOr<IEnumerable<PublicDishDto>>> GetPublicDishes(CancellationToken cancellationToken)
     {
-        var dishes = await _dishRepository.GetAllAsync(cancellationToken);
+        var dishes = await dishRepository.GetAllAsync(cancellationToken);
 
-        var result = dishes.Select(d => new PublicDishDto
-        {
-            Name = d.Name,
-            Description = d.Description,
-            Price = d.Price,
-        }).ToList();
+        var result = dishes.Select(d => DishMapper.GetPublicDish(d)).ToList();
         
         return result;
     }
@@ -37,55 +26,80 @@ public class MenuService : IMenuService
         }
         
         if (string.IsNullOrEmpty(part))
-        {
             return await GetPublicDishes(cancellationToken);
-        }
         
-        var dishes = await _dishRepository.GetAsyncByPart(part,  cancellationToken);
+        
+        var dishes = await dishRepository.GetAsyncByPart(part,  cancellationToken);
 
-        var result = dishes.Select(d => new PublicDishDto
-        {
-            Name = d.Name,
-            Description = d.Description,
-            Price = d.Price
-        }).ToList();
+        var result = dishes.Select(d => DishMapper.GetPublicDish(d)).ToList();
         
         return result;
     }
 
     public async Task<ErrorOr<IEnumerable<ManagerDishDto>>> GetDishesForManager(CancellationToken cancellationToken = default)
     {
-        var dishes = await _dishRepository.GetAllAsync(cancellationToken);
+        var dishes = await dishRepository.GetAllAsync(cancellationToken);
 
-        var result = dishes.Select(d => new ManagerDishDto
-        {
-            Id = d.Id,
-            Name = d.Name,
-            Description = d.Description,
-            ProductionPrice = d.ProductionPrice,
-            Price = d.Price
-        }).ToList();
+        var result = dishes.Select(d => DishMapper.GetManagerDish(d)).ToList();
         
         return result;
     }
 
-    public Task<ErrorOr<ManagerDishDto>> GetDish(Guid id, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<ManagerDishDto>> GetDish(Guid id, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        if (id == Guid.Empty) 
+            return Error.Validation("id", "Search term is empty");
+        
+        var dish = await dishRepository.GetDishAsync(id, cancellationToken);
+
+        if (dish is null)
+            return Error.Validation("dish", "Dish not found");
+
+        return DishMapper.GetManagerDish(dish);
     }
 
-    public Task<ErrorOr<ManagerDishDto>> UpdateDish(UpdateDishDto publicUpdateDish)
+    public async Task<ErrorOr<ManagerDishDto>> UpdateDish(UpdateDishDto dish)
     {
-        throw new NotImplementedException();
+        var pastDish =  await dishRepository.GetDishAsync(dish.Id);
+        
+        if (pastDish is null)
+            return Error.Validation("dish", "Dish not found");
+        
+        if (dish.IsEquivalentTo(pastDish))
+            return DishMapper.GetManagerDish(pastDish);
+
+        var newDish = await dishRepository.UpdateDishAsync(dish);
+        
+        if (newDish is null)
+            return Error.Validation("dish", "Dish not found");
+
+        var result = DishMapper.GetManagerDish(newDish);
+
+        return result;
     }
 
-    public Task<ErrorOr<ManagerDishDto>> AddDish(CreateDishDto publicUpdateDish)
+    public async Task<ErrorOr<ManagerDishDto>> AddDish(CreateDishDto publicUpdateDish)
     {
-        throw new NotImplementedException();
+        if (publicUpdateDish is null)
+            return Error.Validation("dish", "Dish not found");
+        
+        var newDish = await dishRepository.AddDishAsync(publicUpdateDish);
+
+        if (newDish is null)
+            return Error.Validation("dish", "Dish not found");
+        
+        var result = DishMapper.GetManagerDish(newDish);
+        
+        return result;
     }
 
-    public Task<ErrorOr<IMenuService.Deleted>> DeleteDish(Guid id)
+    public async Task<ErrorOr<IMenuService.Deleted>> DeleteDish(Guid id)
     {
-        throw new NotImplementedException();
+        var pastDish =  await dishRepository.DeleteDishAsync(id);
+        
+        if (pastDish is null)
+            return Error.Validation("dish", "Dish not found");
+
+        return new IMenuService.Deleted();
     }
 }

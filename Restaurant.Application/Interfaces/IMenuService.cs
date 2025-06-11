@@ -17,7 +17,7 @@ public interface IMenuService
     // Managers can do this:
     Task<ErrorOr<IEnumerable<ManagerDishDto>>> GetDishesForManager(CancellationToken cancellationToken = default);
     Task<ErrorOr<ManagerDishDto>> GetDish(Guid id, CancellationToken cancellationToken = default);
-    Task<ErrorOr<ManagerDishDto>> UpdateDish(UpdateDishDto publicUpdateDish);
-    Task<ErrorOr<ManagerDishDto>> AddDish(CreateDishDto publicUpdateDish);
+    Task<ErrorOr<ManagerDishDto>> UpdateDish(UpdateDishDto dish);
+    Task<ErrorOr<ManagerDishDto>> AddDish(CreateDishDto dish);
     Task<ErrorOr<Deleted>> DeleteDish(Guid id);
 }
