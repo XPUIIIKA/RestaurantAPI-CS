@@ -5,9 +5,9 @@ namespace Restaurant.Application.Repositories;
 
 public interface IDishRepository
 {
-    Task<IEnumerable<Dish>> GetAllAsync (CancellationToken cancellationToken = default);
+    Task<IEnumerable<Dish>?> GetAllAsync (CancellationToken cancellationToken = default);
     
-    Task<IEnumerable<Dish>> GetAsyncByPart (string part, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Dish>?> GetAsyncByPart (string part, CancellationToken cancellationToken = default);
     
     Task<Dish?> GetDishAsync(Guid id, CancellationToken cancellationToken = default);
 

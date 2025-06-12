@@ -4,14 +4,20 @@ using Restaurant.Application.DTO.DishDTO;
 using Restaurant.Application.Interfaces;
 using Restaurant.Application.Mappers;
 using Restaurant.Application.Repositories;
+using Deleted = Restaurant.Application.Interfaces.Deleted;
 
 namespace Restaurant.Application.Services;
 
-public class MenuService(IDishRepository dishRepository) : IMenuService
+public class MenuService(
+    IDishRepository dishRepository,
+    IUnitOfWork unitOfWork) : IMenuService
 {
     public async Task<ErrorOr<IEnumerable<PublicDishDto>>> GetPublicDishes(CancellationToken cancellationToken)
     {
         var dishes = await dishRepository.GetAllAsync(cancellationToken);
+        
+        if (dishes is null)
+            return new List<PublicDishDto>(); 
 
         var result = dishes.Select(d => DishMapper.GetPublicDish(d)).ToList();
         
@@ -31,6 +37,9 @@ public class MenuService(IDishRepository dishRepository) : IMenuService
         
         var dishes = await dishRepository.GetAsyncByPart(part,  cancellationToken);
 
+        if (dishes is null)
+            return new List<PublicDishDto>(); 
+        
         var result = dishes.Select(d => DishMapper.GetPublicDish(d)).ToList();
         
         return result;
@@ -40,6 +49,9 @@ public class MenuService(IDishRepository dishRepository) : IMenuService
     {
         var dishes = await dishRepository.GetAllAsync(cancellationToken);
 
+        if (dishes is null)
+            return new List<ManagerDishDto>(); 
+        
         var result = dishes.Select(d => DishMapper.GetManagerDish(d)).ToList();
         
         return result;
@@ -70,21 +82,22 @@ public class MenuService(IDishRepository dishRepository) : IMenuService
 
         var newDish = await dishRepository.UpdateDishAsync(dish);
         
+        await unitOfWork.SaveChangesAsync();
+        
         if (newDish is null)
             return Error.Validation("dish", "Dish not found");
 
         var result = DishMapper.GetManagerDish(newDish);
-
+        
         return result;
     }
 
     public async Task<ErrorOr<ManagerDishDto>> AddDish(CreateDishDto publicUpdateDish)
     {
-        if (publicUpdateDish is null)
-            return Error.Validation("dish", "Dish not found");
-        
         var newDish = await dishRepository.AddDishAsync(publicUpdateDish);
 
+        await unitOfWork.SaveChangesAsync();
+        
         if (newDish is null)
             return Error.Validation("dish", "Dish not found");
         
@@ -93,13 +106,18 @@ public class MenuService(IDishRepository dishRepository) : IMenuService
         return result;
     }
 
-    public async Task<ErrorOr<IMenuService.Deleted>> DeleteDish(Guid id)
+    public async Task<ErrorOr<Deleted>> DeleteDish(Guid id)
     {
+        if (Guid.Empty == id)
+            return Error.Validation("Check", "The checks id must not be empty.");
+        
         var pastDish =  await dishRepository.DeleteDishAsync(id);
+        
+        await unitOfWork.SaveChangesAsync();
         
         if (pastDish is null)
             return Error.Validation("dish", "Dish not found");
 
-        return new IMenuService.Deleted();
+        return new Deleted();
     }
 }

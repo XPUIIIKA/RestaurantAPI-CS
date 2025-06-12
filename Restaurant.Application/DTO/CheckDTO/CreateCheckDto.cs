@@ -3,7 +3,7 @@ using Restaurant.Domain.ShortElems;
 
 namespace Restaurant.Application.DTO.CheckDTO;
 
-public record CheckReqestDto
+public record CreateCheckDto
 {
     [Required]
     public required Guid Waiter { get; init; }

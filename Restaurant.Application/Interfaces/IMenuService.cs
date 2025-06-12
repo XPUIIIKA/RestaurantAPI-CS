@@ -6,8 +6,6 @@ namespace Restaurant.Application.Interfaces;
 
 public interface IMenuService
 {
-    record struct Deleted;
-    
     //Guest can do this:
     Task<ErrorOr<IEnumerable<PublicDishDto>>> GetPublicDishes(CancellationToken cancellationToken = default);
     

@@ -2,7 +2,7 @@
 
 namespace Restaurant.Application.DTO.CheckDTO;
 
-public class CheckResponsDto
+public class ManagerCheckDto
 {
     public required Guid Id { get; set; }
     public required Guid Waiter { get; init; }
