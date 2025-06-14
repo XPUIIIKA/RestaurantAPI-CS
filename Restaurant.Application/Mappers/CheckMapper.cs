@@ -9,7 +9,7 @@ public static class CheckMapper
     {
         Id = check.Id,
         Waiter = check.Waiter,
-        Dishes = check.Dishes.Select(d => new DishInCheckDto
+        Dishes = check.Dishes.Select(d => new PublicDishInCheckDto
         {
             Id = d.Id,
             Price = d.Price,
@@ -20,7 +20,7 @@ public static class CheckMapper
     {
         Id = check.Id,
         Waiter = check.Waiter,
-        Dishes = check.Dishes.Select(d => new DishInCheckDto
+        Dishes = check.Dishes.Select(d => new PublicDishInCheckDto
         {
             Id = d.Id,
             Price = d.Price,

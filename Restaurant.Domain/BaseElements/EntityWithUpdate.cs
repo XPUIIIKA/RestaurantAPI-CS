@@ -2,5 +2,5 @@
 
 public abstract class EntityWithUpdate :  BaseEntity
 {
-    public required DateTime UpdatedAd { get; set; }
+    public required DateTime UpdatedAt { get; set; }
 }

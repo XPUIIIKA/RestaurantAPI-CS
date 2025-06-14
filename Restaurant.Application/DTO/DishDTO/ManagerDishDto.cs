@@ -1,4 +1,4 @@
-﻿namespace Restaurant.Application.DTO;
+﻿namespace Restaurant.Application.DTO.DishDTO;
 
 public record ManagerDishDto
 {

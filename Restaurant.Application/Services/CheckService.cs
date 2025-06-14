@@ -1,9 +1,9 @@
 ﻿using ErrorOr;
 using Restaurant.Application.DTO.CheckDTO;
 using Restaurant.Application.Interfaces;
+using Restaurant.Application.IRepositories;
 using Restaurant.Application.Mappers;
-using Restaurant.Application.Repositories;
-using Deleted = Restaurant.Application.Interfaces.Deleted;
+using Deleted = Restaurant.Application.InfoClass.Deleted;
 
 
 namespace Restaurant.Application.Services;

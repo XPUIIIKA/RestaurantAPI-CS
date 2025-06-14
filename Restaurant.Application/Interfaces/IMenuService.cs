@@ -1,6 +1,7 @@
 ﻿using ErrorOr;
 using Restaurant.Application.DTO;
 using Restaurant.Application.DTO.DishDTO;
+using Deleted = Restaurant.Application.InfoClass.Deleted;
 
 namespace Restaurant.Application.Interfaces;
 

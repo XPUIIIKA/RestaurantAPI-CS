@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using Restaurant.Application.DTO;
+using Restaurant.Application.DTO.DishDTO;
 
 namespace Restaurant.Application.Interfaces;
 
@@ -11,5 +12,5 @@ public interface IAnalyticsService
     Task<ErrorOr<int>> GetTotalChecksCount(DateTime? from = null, DateTime? to = null);
     
     // Directors can do this
-    Task<ErrorOr<IEnumerable<ManagerDishDto>>> GetTopSellingDishes(Guid restaurantId);
+    Task<ErrorOr<IEnumerable<ManagerDishDto>>> GetTopSellingDishes(CancellationToken cancellationToken);
 }

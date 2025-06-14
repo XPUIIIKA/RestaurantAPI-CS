@@ -13,3 +13,4 @@ D:\Документы\Програмирование\ASP.NET\Restaurant\Restaura
 D:\Документы\Програмирование\ASP.NET\Restaurant\Restaurant.Application\obj\Debug\net9.0\refint\Restaurant.Application.dll
 D:\Документы\Програмирование\ASP.NET\Restaurant\Restaurant.Application\obj\Debug\net9.0\Restaurant.Application.pdb
 D:\Документы\Програмирование\ASP.NET\Restaurant\Restaurant.Application\obj\Debug\net9.0\ref\Restaurant.Application.dll
+D:\Документы\Програмирование\ASP.NET\Restaurant\Restaurant.Application\obj\Debug\net9.0\Restaurant.Application.sourcelink.json
