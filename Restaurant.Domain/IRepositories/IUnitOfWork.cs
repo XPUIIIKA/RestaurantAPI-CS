@@ -1,4 +1,4 @@
-﻿namespace Restaurant.Application.IRepositories;
+﻿namespace Restaurant.Domain.IRepositories;
 
 public interface IUnitOfWork
 {

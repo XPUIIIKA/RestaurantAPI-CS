@@ -6,6 +6,6 @@ public static class ChecksMapper
 {
     public static IEnumerable<Guid> GetOnlyDishesByChecks(IEnumerable<Check> checks)
     {
-        return checks.SelectMany(check => check.Dishes.Select(dish => dish.Id));
+        return checks.SelectMany(check => check.Dishes.Select(dish => dish.DishId));
     }
 }

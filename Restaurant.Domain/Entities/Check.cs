@@ -1,11 +1,12 @@
 ﻿using Restaurant.Domain.BaseElements;
-using Restaurant.Domain.ShortElems;
 
 namespace Restaurant.Domain.Entities;
 
 public class Check : BaseEntity
 {
-    public required Guid Waiter { get; init; }
+    public required Guid WaiterId { get; init; }
+    
+    public User? Waiter { get; init; }
     public required List<DishInCheck> Dishes { get; init; }
     public decimal TotalPrice => SumTotalPrice();
     

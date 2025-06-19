@@ -8,22 +8,14 @@ public static class CheckMapper
     public static ManagerCheckDto GetManagerCheck(Check check) => new ManagerCheckDto
     {
         Id = check.Id,
-        Waiter = check.Waiter,
-        Dishes = check.Dishes.Select(d => new PublicDishInCheckDto
-        {
-            Id = d.Id,
-            Price = d.Price,
-        }),
+        Waiter = check.WaiterId,
+        Dishes = check.Dishes.Select(d => DishMapper.GetManagerDishInCheckDto(d)),
     };
     
     public static PublicCheckDto GetPublicCheck(Check check) => new PublicCheckDto
     {
         Id = check.Id,
-        Waiter = check.Waiter,
-        Dishes = check.Dishes.Select(d => new PublicDishInCheckDto
-        {
-            Id = d.Id,
-            Price = d.Price,
-        }),
+        Waiter = check.WaiterId,
+        Dishes = check.Dishes.Select(d => DishMapper.GetPublicDishInCheckDto(d)),
     };
 }

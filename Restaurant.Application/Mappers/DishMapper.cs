@@ -2,7 +2,6 @@
 using Restaurant.Application.DTO.CheckDTO;
 using Restaurant.Application.DTO.DishDTO;
 using Restaurant.Domain.Entities;
-using Restaurant.Domain.ShortElems;
 
 namespace Restaurant.Application.Mappers;
 
@@ -24,9 +23,25 @@ public static class DishMapper
         Price = dish.Price
     };
 
-    public static PublicDishInCheckDto GetDishInCheck(DishInCheck dish) => new PublicDishInCheckDto
+    public static PublicDishInCheckDto GetPublicDishInCheckDto(DishInCheck dish)
     {
-        Id = dish.Id,
-        Price = dish.Price
-    };
+        return new PublicDishInCheckDto
+        {
+            DishId = dish.DishId,
+            CheckId = dish.CheckId,
+            Price = dish.Price,
+        };
+    }
+
+    public static ManagerDishInCheckDto GetManagerDishInCheckDto(DishInCheck dish)
+    {
+        return new ManagerDishInCheckDto
+        {
+            DishId = dish.DishId,
+            CheckId = dish.CheckId,
+            Price = dish.Price,
+            ProductionPrice = dish.ProductionPrice,
+            Quantity = dish.Quantity,
+        };
+    }
 }

@@ -1,23 +1,22 @@
 ﻿using ErrorOr;
-using Restaurant.Application.DTO;
+using Microsoft.Extensions.Logging;
 using Restaurant.Application.DTO.DishDTO;
 using Restaurant.Application.Interfaces;
-using Restaurant.Application.IRepositories;
 using Restaurant.Application.Mappers;
+using Restaurant.Domain.Entities;
+using Restaurant.Domain.IRepositories;
 using Deleted = Restaurant.Application.InfoClass.Deleted;
 
 namespace Restaurant.Application.Services;
 
 public class MenuService(
     IDishRepository dishRepository,
-    IUnitOfWork unitOfWork) : IMenuService
+    IUnitOfWork unitOfWork,
+    ILogger<CheckService> logger) : IMenuService
 {
     public async Task<ErrorOr<IEnumerable<PublicDishDto>>> GetPublicDishes(CancellationToken cancellationToken)
     {
         var dishes = await dishRepository.GetAllAsync(cancellationToken);
-        
-        if (dishes is null)
-            return new List<PublicDishDto>(); 
 
         var result = dishes.Select(d => DishMapper.GetPublicDish(d)).ToList();
         
@@ -36,9 +35,6 @@ public class MenuService(
         
         
         var dishes = await dishRepository.GetAsyncByPart(part,  cancellationToken);
-
-        if (dishes is null)
-            return new List<PublicDishDto>(); 
         
         var result = dishes.Select(d => DishMapper.GetPublicDish(d)).ToList();
         
@@ -48,9 +44,6 @@ public class MenuService(
     public async Task<ErrorOr<IEnumerable<ManagerDishDto>>> GetDishesForManager(CancellationToken cancellationToken = default)
     {
         var dishes = await dishRepository.GetAllAsync(cancellationToken);
-
-        if (dishes is null)
-            return new List<ManagerDishDto>(); 
         
         var result = dishes.Select(d => DishMapper.GetManagerDish(d)).ToList();
         
@@ -80,30 +73,52 @@ public class MenuService(
         if (dish.IsEquivalentTo(pastDish))
             return DishMapper.GetManagerDish(pastDish);
 
-        var newDish = await dishRepository.UpdateDishAsync(dish);
+        var newDish = new Dish
+        {
+            Id = dish.Id,
+            Name = dish.Name,
+            Description = dish.Description,
+            ProductionPrice = dish.ProductionPrice,
+            Price = dish.Price,
+            CreatedAt = pastDish.CreatedAt,
+            UpdatedAt = DateTime.Now,
+        };
+        
+        var respons = await dishRepository.UpdateDishAsync(newDish);
         
         await unitOfWork.SaveChangesAsync();
         
-        if (newDish is null)
+        if (respons is null)
             return Error.Validation("dish", "Dish not found");
 
-        var result = DishMapper.GetManagerDish(newDish);
+        var result = DishMapper.GetManagerDish(respons);
         
         return result;
     }
 
     public async Task<ErrorOr<ManagerDishDto>> AddDish(CreateDishDto publicUpdateDish)
     {
-        var newDish = await dishRepository.AddDishAsync(publicUpdateDish);
+        var newDish = new Dish
+        {
+            Id = Guid.NewGuid(),
+            Name = publicUpdateDish.Name,
+            Description = publicUpdateDish.Description,
+            ProductionPrice = publicUpdateDish.ProductionPrice,
+            Price = publicUpdateDish.Price,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now,
+        };
+        
+        var result = await dishRepository.AddDishAsync(newDish);
 
         await unitOfWork.SaveChangesAsync();
         
-        if (newDish is null)
+        if (result is null)
             return Error.Validation("dish", "Dish not found");
         
-        var result = DishMapper.GetManagerDish(newDish);
+        var managerDish = DishMapper.GetManagerDish(result);
         
-        return result;
+        return managerDish;
     }
 
     public async Task<ErrorOr<Deleted>> DeleteDish(Guid id)
