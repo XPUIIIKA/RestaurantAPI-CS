@@ -30,11 +30,11 @@ public class CheckService(
 
         if (result is null)
         {
-            logger.LogWarning("Check not found");
+            logger.LogError("Check not found");
             return Error.Validation("Check", "Check not found.");
         }
         
-        logger.LogInformation("GetCheckById function finished");
+        logger.LogInformation("GetCheckById function finished {result}", result);
         return CheckMapper.GetManagerCheck(result);
     }
 
@@ -58,7 +58,7 @@ public class CheckService(
 
             if (dishInManu == null)
             {
-                logger.LogWarning("Dish not found");
+                logger.LogError("Dish not found");
                 return Error.Validation("Dish", "Dish not found.");
             }
             
@@ -85,13 +85,13 @@ public class CheckService(
 
         if (result is null)
         {
-            logger.LogWarning("Create check failed");
+            logger.LogError("Create check failed");
             return  Error.Validation("Check", "Create check failed.");
         }
 
         await unitOfWork.SaveChangesAsync();
         
-        logger.LogInformation("CreateCheck function finished");
+        logger.LogInformation("CreateCheck function finished {result}", result);
         return CheckMapper.GetPublicCheck(result);
     }
     
@@ -109,13 +109,13 @@ public class CheckService(
 
         if (pastCheck is null)
         {
-            logger.LogWarning("Delete check failed");
+            logger.LogError("Delete check failed");
             return Error.Validation("Check", "Delete check failed");
         }
         
         await unitOfWork.SaveChangesAsync();
         
-        logger.LogInformation("DeleteCheck function finished");
+        logger.LogInformation("DeleteCheck function finished {pastCheck}", pastCheck);
         return new Deleted();
     }
 }

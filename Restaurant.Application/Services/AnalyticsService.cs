@@ -14,7 +14,7 @@ public class AnalyticsService(
 {
     public async Task<ErrorOr<decimal>> GetTotalRevenue(DateTime? from = null, DateTime? to = null)
     {
-        logger.LogDebug("GetTotalRevenue function started");
+        logger.LogInformation("GetTotalRevenue function started");
 
         if (from > to)
         {
@@ -38,17 +38,17 @@ public class AnalyticsService(
 
         if (result == 0)
         {
-            logger.LogCritical("Total value of checks not found");
+            logger.LogError("Total value of checks not found");
             return Error.Conflict("Check","Total value of checks not found.");
         }
 
-        logger.LogInformation("GetTotalRevenue function finished");
+        logger.LogInformation("GetTotalRevenue function finished {result}", result);
         return result;
     }
 
     public async Task<ErrorOr<int>> GetTotalChecksCount(DateTime? from = null, DateTime? to = null)
     {
-        logger.LogDebug("GetTotalChecksCount function started");
+        logger.LogInformation("GetTotalChecksCount function started");
         
         if (from > to)
         {
@@ -72,11 +72,11 @@ public class AnalyticsService(
 
         if (result == 0)
         {
-            logger.LogCritical("Total count of checks not found");
+            logger.LogError("Total count of checks not found");
             return Error.Conflict("Check","Total count of checks not found");
         }
         
-        logger.LogInformation("GetTotalChecksCount function finished");
+        logger.LogInformation("GetTotalChecksCount function finished {result}", result);
         return result;
     }
 
@@ -85,13 +85,13 @@ public class AnalyticsService(
     {
         const int topSize = 5;
         
-        logger.LogDebug("GetTopSellingDishes function started with topSize param: {topSize}", topSize);
+        logger.LogInformation("GetTopSellingDishes function started with topSize param: {topSize}", topSize);
         
         var checks = (await checkRepository.GetAllChecksAsync(cancellationToken)).ToList();
 
         if (!checks.Any())
         {
-            logger.LogWarning("Checks list empty");
+            logger.LogCritical("Dishes list empty");
             return Error.Conflict("Check", "checks is empty");
         }
 
@@ -117,7 +117,8 @@ public class AnalyticsService(
             return Error.Conflict("Dish", "Dish is empty");
         }
         
-        logger.LogInformation("GetTopSellingDishes function finished");
+        logger.LogInformation("GetTopSellingDishes function finished {topDishes}", topDishes.Select(d => d.Name));
+        
         return topDishes.Select(d => DishMapper.GetManagerDish(d)).ToList();
     }
 }
