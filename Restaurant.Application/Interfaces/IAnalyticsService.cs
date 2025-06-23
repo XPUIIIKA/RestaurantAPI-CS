@@ -8,9 +8,8 @@ public interface IAnalyticsService
 {
     
     // Managers can do this:
-    Task<ErrorOr<decimal>> GetTotalRevenue(DateTime? from = null, DateTime? to = null);
-    Task<ErrorOr<int>> GetTotalChecksCount(DateTime? from = null, DateTime? to = null);
-    
-    // Directors can do this
-    Task<ErrorOr<IEnumerable<ManagerDishDto>>> GetTopSellingDishes(CancellationToken cancellationToken);
+    Task<ErrorOr<decimal>> GetTotalRevenueAsync(DateTime? from = null, DateTime? to = null, CancellationToken cancellationToken = default);
+    Task<ErrorOr<int>> GetTotalChecksCountAsync(DateTime? from = null, DateTime? to = null, CancellationToken cancellationToken = default);
+    // Directors can do this:
+    Task<ErrorOr<IEnumerable<ManagerDishDto>>> GetTopSellingDishesAsync(CancellationToken cancellationToken);
 }

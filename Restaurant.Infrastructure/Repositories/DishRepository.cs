@@ -12,7 +12,7 @@ public class DishRepository(RestaurantDbContext context) : IDishRepository
         return await context.Dishes.ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<Dish>> GetAsyncByPart(string part, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Dish>> GetAsyncByPartAsync(string part, CancellationToken cancellationToken = default)
     {
         return await context.Dishes
             .Where(d => EF.Functions.Like(d.Name, $"%{part}%") ||
@@ -43,7 +43,7 @@ public class DishRepository(RestaurantDbContext context) : IDishRepository
         updatedDish.Description = dish.Description;
         updatedDish.Price = dish.Price;
         updatedDish.ProductionPrice = dish.ProductionPrice;
-        updatedDish.UpdatedAt = DateTime.Now;
+        updatedDish.UpdatedAt = DateTime.UtcNow;
         
         return updatedDish;
     }

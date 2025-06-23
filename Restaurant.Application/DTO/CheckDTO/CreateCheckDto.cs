@@ -10,6 +10,6 @@ public record CreateCheckDto
     [Required]
     [MinLength(1, ErrorMessage = "List must have at least one item")]
     [MaxLength(30, ErrorMessage = "List must have no more than 30 items")]
-    public required List<ManagerDishInCheckDto> Dishes { get; init; }
+    public required List<CreateCheckDishInCheckDto> Dishes { get; init; }
     
 }

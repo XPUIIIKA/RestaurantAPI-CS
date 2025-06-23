@@ -5,8 +5,6 @@ using Restaurant.Application.Interfaces;
 using Restaurant.Application.Mappers;
 using Restaurant.Domain.Entities;
 using Restaurant.Domain.IRepositories;
-using Deleted = Restaurant.Application.InfoClass.Deleted;
-
 
 namespace Restaurant.Application.Services;
 
@@ -16,7 +14,7 @@ public class CheckService(
     IUnitOfWork unitOfWork,
     ILogger<CheckService> logger) : ICheckService
 {
-    public async Task<ErrorOr<ManagerCheckDto>> GetCheckById(Guid id, CancellationToken cancellationToken)
+    public async Task<ErrorOr<ManagerCheckDto>> GetCheckByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetCheckById function started");
         
@@ -38,7 +36,7 @@ public class CheckService(
         return CheckMapper.GetManagerCheck(result);
     }
 
-    public async Task<ErrorOr<PublicCheckDto>> CreateCheck(CreateCheckDto createCheck)
+    public async Task<ErrorOr<ManagerCheckDto>> CreateCheckAsync(CreateCheckDto createCheck)
     {
         logger.LogInformation("CreateCheck function started");
         
@@ -78,7 +76,7 @@ public class CheckService(
             Id = newCheckId,
             WaiterId = createCheck.WaiterId,
             Dishes = dishes,
-            CreatedAt = DateTime.Now,
+            CreatedAt = DateTime.UtcNow,
         };
         
         var result = await checkRepository.CreateCheckAsync(check);
@@ -92,10 +90,10 @@ public class CheckService(
         await unitOfWork.SaveChangesAsync();
         
         logger.LogInformation("CreateCheck function finished {result}", result);
-        return CheckMapper.GetPublicCheck(result);
+        return CheckMapper.GetManagerCheck(result);
     }
     
-    public async Task<ErrorOr<Deleted>> DeleteCheck(Guid id)
+    public async Task<ErrorOr<ManagerCheckDto>> DeleteCheckAsync(Guid id)
     {
         logger.LogInformation("DeleteCheck function started");
 
@@ -116,6 +114,6 @@ public class CheckService(
         await unitOfWork.SaveChangesAsync();
         
         logger.LogInformation("DeleteCheck function finished {pastCheck}", pastCheck);
-        return new Deleted();
+        return CheckMapper.GetManagerCheck(pastCheck);
     }
 }

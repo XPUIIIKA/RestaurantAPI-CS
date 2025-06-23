@@ -5,7 +5,6 @@ using Restaurant.Application.Interfaces;
 using Restaurant.Application.Mappers;
 using Restaurant.Domain.Entities;
 using Restaurant.Domain.IRepositories;
-using Deleted = Restaurant.Application.InfoClass.Deleted;
 
 namespace Restaurant.Application.Services;
 
@@ -14,7 +13,7 @@ public class MenuService(
     IUnitOfWork unitOfWork,
     ILogger<CheckService> logger) : IMenuService
 {
-    public async Task<ErrorOr<IEnumerable<PublicDishDto>>> GetPublicDishes(CancellationToken cancellationToken)
+    public async Task<ErrorOr<IEnumerable<PublicDishDto>>> GetPublicDishesAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation("GetPublicDishes function started");
         
@@ -27,7 +26,7 @@ public class MenuService(
         return result;
     }
 
-    public async Task<ErrorOr<IEnumerable<PublicDishDto>>> GetPublicDishesByPart(string part, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<IEnumerable<PublicDishDto>>> GetPublicDishesByPartAsync(string part, CancellationToken cancellationToken)
     {
         logger.LogInformation("GetPublicDishesByPart function started");
         
@@ -38,10 +37,10 @@ public class MenuService(
         }
         
         if (string.IsNullOrEmpty(part))
-            return await GetPublicDishes(cancellationToken);
+            return await GetPublicDishesAsync(cancellationToken);
         
         
-        var dishes = await dishRepository.GetAsyncByPart(part,  cancellationToken);
+        var dishes = await dishRepository.GetAsyncByPartAsync(part,  cancellationToken);
         
         var result = dishes.Select(d => DishMapper.GetPublicDish(d)).ToList();
         
@@ -50,7 +49,7 @@ public class MenuService(
         return result;
     }
 
-    public async Task<ErrorOr<IEnumerable<ManagerDishDto>>> GetDishesForManager(CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<IEnumerable<ManagerDishDto>>> GetDishesForManagerAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation("GetDishesForManager function started");
         
@@ -63,7 +62,7 @@ public class MenuService(
         return result;
     }
 
-    public async Task<ErrorOr<ManagerDishDto>> GetDish(Guid id, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<ManagerDishDto>> GetDishAsync(Guid id, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("GetDish function started");
 
@@ -86,7 +85,7 @@ public class MenuService(
         return DishMapper.GetManagerDish(dish);
     }
 
-    public async Task<ErrorOr<ManagerDishDto>> UpdateDish(UpdateDishDto dish)
+    public async Task<ErrorOr<ManagerDishDto>> UpdateDishAsync(UpdateDishDto dish)
     {
         logger.LogInformation("UpdateDish function started");
         
@@ -112,7 +111,7 @@ public class MenuService(
             ProductionPrice = dish.ProductionPrice,
             Price = dish.Price,
             CreatedAt = pastDish.CreatedAt,
-            UpdatedAt = DateTime.Now,
+            UpdatedAt = DateTime.UtcNow,
         };
         
         var respons = await dishRepository.UpdateDishAsync(newDish);
@@ -132,7 +131,7 @@ public class MenuService(
         return result;
     }
 
-    public async Task<ErrorOr<ManagerDishDto>> AddDish(CreateDishDto publicUpdateDish)
+    public async Task<ErrorOr<ManagerDishDto>> AddDishAsync(CreateDishDto publicUpdateDish)
     {
         logger.LogInformation("AddDish function started");
         
@@ -143,8 +142,8 @@ public class MenuService(
             Description = publicUpdateDish.Description,
             ProductionPrice = publicUpdateDish.ProductionPrice,
             Price = publicUpdateDish.Price,
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
         };
         
         var result = await dishRepository.AddDishAsync(newDish);
@@ -164,7 +163,7 @@ public class MenuService(
         return managerDish;
     }
 
-    public async Task<ErrorOr<Deleted>> DeleteDish(Guid id)
+    public async Task<ErrorOr<ManagerDishDto>> DeleteDishAsync(Guid id)
     {
         logger.LogInformation("DeleteDish function started");
 
@@ -186,6 +185,6 @@ public class MenuService(
 
         logger.LogInformation("UpdateDish function finished {pastDish}", pastDish);
         
-        return new Deleted();
+        return DishMapper.GetManagerDish(pastDish);
     }
 }

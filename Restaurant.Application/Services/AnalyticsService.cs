@@ -12,7 +12,7 @@ public class AnalyticsService(
     ICheckRepository checkRepository,
     ILogger<CheckService> logger) : IAnalyticsService
 {
-    public async Task<ErrorOr<decimal>> GetTotalRevenue(DateTime? from = null, DateTime? to = null)
+    public async Task<ErrorOr<decimal>> GetTotalRevenueAsync(DateTime? from = null, DateTime? to = null, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("GetTotalRevenue function started");
 
@@ -34,7 +34,7 @@ public class AnalyticsService(
             return Error.Validation("DateRange", "'To' date cannot be in the future.");
         }
 
-        var result = await checkRepository.GetTotalRevenue(from, to);
+        var result = await checkRepository.GetTotalRevenueAsync(from, to, cancellationToken);
 
         if (result == 0)
         {
@@ -46,7 +46,7 @@ public class AnalyticsService(
         return result;
     }
 
-    public async Task<ErrorOr<int>> GetTotalChecksCount(DateTime? from = null, DateTime? to = null)
+    public async Task<ErrorOr<int>> GetTotalChecksCountAsync(DateTime? from = null, DateTime? to = null, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("GetTotalChecksCount function started");
         
@@ -68,7 +68,7 @@ public class AnalyticsService(
             return Error.Validation("DateRange", "'To' date cannot be in the future");
         }
         
-        var result = await checkRepository.GetTotalChecksCount(from, to);
+        var result = await checkRepository.GetTotalChecksCountAsync(from, to, cancellationToken);
 
         if (result == 0)
         {
@@ -80,7 +80,7 @@ public class AnalyticsService(
         return result;
     }
 
-    public async Task<ErrorOr<IEnumerable<ManagerDishDto>>> GetTopSellingDishes(
+    public async Task<ErrorOr<IEnumerable<ManagerDishDto>>> GetTopSellingDishesAsync(
         CancellationToken cancellationToken = default)
     {
         const int topSize = 5;

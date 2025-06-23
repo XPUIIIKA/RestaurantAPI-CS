@@ -6,7 +6,7 @@ public interface IDishRepository
 {
     Task<IEnumerable<Dish>> GetAllAsync (CancellationToken cancellationToken = default);
     
-    Task<IEnumerable<Dish>> GetAsyncByPart (string part, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Dish>> GetAsyncByPartAsync (string part, CancellationToken cancellationToken = default);
 
     Task<IEnumerable<Dish>> GetDishesByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default);
     

@@ -1,22 +1,17 @@
 ﻿using ErrorOr;
-using Restaurant.Application.DTO;
 using Restaurant.Application.DTO.DishDTO;
-using Deleted = Restaurant.Application.InfoClass.Deleted;
 
 namespace Restaurant.Application.Interfaces;
 
 public interface IMenuService
 {
     //Guest can do this:
-    Task<ErrorOr<IEnumerable<PublicDishDto>>> GetPublicDishes(CancellationToken cancellationToken = default);
-    
-    Task<ErrorOr<IEnumerable<PublicDishDto>>> GetPublicDishesByPart(string part, CancellationToken cancellationToken = default);
-    
-    
+    Task<ErrorOr<IEnumerable<PublicDishDto>>> GetPublicDishesAsync(CancellationToken cancellationToken);
+    Task<ErrorOr<IEnumerable<PublicDishDto>>> GetPublicDishesByPartAsync(string part, CancellationToken cancellationToken);
     // Managers can do this:
-    Task<ErrorOr<IEnumerable<ManagerDishDto>>> GetDishesForManager(CancellationToken cancellationToken = default);
-    Task<ErrorOr<ManagerDishDto>> GetDish(Guid id, CancellationToken cancellationToken = default);
-    Task<ErrorOr<ManagerDishDto>> UpdateDish(UpdateDishDto dish);
-    Task<ErrorOr<ManagerDishDto>> AddDish(CreateDishDto dish);
-    Task<ErrorOr<Deleted>> DeleteDish(Guid id);
+    Task<ErrorOr<IEnumerable<ManagerDishDto>>> GetDishesForManagerAsync(CancellationToken cancellationToken);
+    Task<ErrorOr<ManagerDishDto>> GetDishAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<ErrorOr<ManagerDishDto>> UpdateDishAsync(UpdateDishDto dish);
+    Task<ErrorOr<ManagerDishDto>> AddDishAsync(CreateDishDto dish);
+    Task<ErrorOr<ManagerDishDto>> DeleteDishAsync(Guid id);
 }

@@ -5,8 +5,8 @@ namespace Restaurant.Application.DTO.DishDTO;
 public class CreateDishDto
 {
     [Required]
-    [MaxLength(32, ErrorMessage = "Name must be between 4 and 32 characters")]
-    [MinLength(4, ErrorMessage = "Name must be between 4 and 32 characters")]
+    [MaxLength(16, ErrorMessage = "Name must be between 4 and 16 characters")]
+    [MinLength(4, ErrorMessage = "Name must be between 4 and 16 characters")]
     public required string Name { get; init; }
     
     [Required]
